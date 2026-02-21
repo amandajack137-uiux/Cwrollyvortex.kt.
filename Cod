@@ -1,0 +1,52 @@
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.dp
+import kotlin.math.cos
+import kotlin.math.sin
+
+/**
+ * CwrollyVortex: O motor principal de navegação em espiral.
+ * @param items Lista de strings ou objetos para exibir.
+ * @param scrollOffset O valor de rotação vindo da coroa rotativa.
+ */
+@Composable
+fun CwrollyVortex(
+    items: List<String>,
+    scrollOffset: Float
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        items.forEachIndexed { index, title ->
+            // Cálculo do ângulo baseado no índice e no scroll da coroa
+            // 0.5f é a velocidade da "rosca" da espiral
+            val angle = (index * 45f + scrollOffset * 0.5f) * (Math.PI / 180f).toFloat()
+            
+            // Lógica de Projeção Z-Vortex
+            val x = cos(angle.toDouble()).toFloat() * 100f
+            val y = sin(angle.toDouble()).toFloat() * 120f
+            
+            // O SENO controla a escala (profundidade) e a opacidade
+            // Quando sin(angle) é positivo, o item está na "frente"
+            val rawSin = sin(angle.toDouble()).toFloat()
+            val scale = (rawSin + 2f) / 3f 
+            val opacity = (rawSin + 1f) / 2f
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        translationX = x
+                        translationY = y
+                        scaleX = scale
+                        scaleY = scale
+                        alpha = opacity
+                    },
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                // Aqui vai o seu componente de texto ou ícone
+                VortexItem(title, isFocused = scale > 0.8f)
+            }
+        }
+    }
+}
