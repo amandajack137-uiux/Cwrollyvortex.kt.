@@ -1,0 +1,2 @@
+# Cwrollyvortex.kt.
+Rolagem infinita 
